@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h2>Active Incident Tracking</h2>
+</div>
+
+{% if session.get('role') in ['admin', 'analyst_l2'] %}
+<div class="card" style="margin-bottom: 2rem; background: rgba(15, 23, 42, 0.4);">
+    <h3 style="margin-top: 0;">Open New Incident</h3>
+    <form id="incident-form" style="display: flex; gap: 1rem; align-items: flex-start;">
+        <input type="text" id="inc-title" placeholder="Incident Title" style="flex: 2;" required>
+        <select id="inc-sev" style="flex: 1;">
+            <option value="Medium">Medium Severity</option>
+            <option value="High">High Severity</option>
+            <option value="Critical">Critical Severity</option>
+        </select>
+        <textarea id="inc-desc" placeholder="Initial findings..." style="flex: 3; height: 38px; resize: none;"></textarea>
+        <button type="button" onclick="submitIncident()" style="flex: 1;">Create</button>
+    </form>
+</div>
+<script>
+async function submitIncident() {
+    const data = {
+        title: document.getElementById('inc-title').value,
+        severity: document.getElementById('inc-sev').value,
+        description: document.getElementById('inc-desc').value,
+        status: 'open'
+    };
+    
+    if(!data.title) return alert("Title required.");
+
+    try {
+        const res = await fetch('/admin/incidents', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        if(res.ok) {
+            // 1. Manually clear the inputs to defeat the browser's auto-save memory
+            document.getElementById('inc-title').value = '';
+            document.getElementById('inc-desc').value = '';
+            document.getElementById('inc-sev').value = 'Medium';
+            
+            // 2. Force a completely fresh page load instead of a soft refresh
+            window.location.href = window.location.pathname;
+        } else {
+            alert('Error creating incident.');
+        }
+    } catch(e) { 
+        alert('Request failed.'); 
+    }
+}
+</script>
+{% endif %}
+
+<table>
+    <tr><th>ID</th><th>Status</th><th>Severity</th><th>Title</th><th>Assigned To</th><th>Updated</th></tr>
+    {% for inc in incidents %}
+    <tr>
+        <td>#{{ inc.id }}</td>
+        
+        <td>
+            {% if session.get('role') == 'admin' %}
+            <select onchange="updateIncident({{ inc.id }}, 'status', this.value)" style="padding: 2px 5px; font-size: 0.75rem; font-weight: bold; background: {{ '#166534' if inc.status == 'closed' else '#854d0e' }}; color: white; border: none;">
+                <option value="open" {% if inc.status == 'open' %}selected{% endif %}>OPEN</option>
+                <option value="closed" {% if inc.status == 'closed' %}selected{% endif %}>CLOSED</option>
+            </select>
+            {% else %}
+            <span class="badge" style="background: {{ '#22c55e' if inc.status == 'closed' else '#eab308' }}">{{ inc.status|upper }}</span>
+            {% endif %}
+        </td>
+        
+        <td style="color: var(--{{ inc.severity|lower }}); font-weight: bold;">{{ inc.severity }}</td>
+        <td>{{ inc.title }}</td>
+        
+        <td>
+            {% if session.get('role') == 'admin' %}
+            <select onchange="updateIncident({{ inc.id }}, 'assigned_to', this.value)" style="padding: 2px 5px; font-size: 0.8rem;">
+                <option value="">Unassigned</option>
+                <option value="S. Novak (L2 Analyst)" {% if inc.assigned_to == 'S. Novak (L2 Analyst)' %}selected{% endif %}>S. Novak (L2)</option>
+                <option value="J. Carter (L1 Analyst)" {% if inc.assigned_to == 'J. Carter (L1 Analyst)' %}selected{% endif %}>J. Carter (L1)</option>
+                <option value="Network Team" {% if inc.assigned_to == 'Network Team' %}selected{% endif %}>Network Team</option>
+            </select>
+            {% else %}
+            {{ inc.assigned_to or 'Unassigned' }}
+            {% endif %}
+        </td>
+        
+        <td style="font-size: 0.85rem;">{{ inc.updated_at[:10] if inc.updated_at else 'N/A' }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" style="text-align: center;">No incidents logged.</td></tr>
+    {% endfor %}
+</table>
+
+{% if session.get('role') == 'admin' %}
+<script>
+async function updateIncident(id, field, value) {
+    const payload = {};
+    payload[field] = value;
+
+    try {
+        const res = await fetch(`/admin/incidents/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        if(res.ok) {
+            // Optional: Reload to update colors/timestamps instantly
+            window.location.reload(); 
+        } else {
+            alert('Failed to update incident.');
+        }
+    } catch(e) {
+        alert('Network request failed.');
+    }
+}
+</script>
+{% endif %}
+{% endblock %}

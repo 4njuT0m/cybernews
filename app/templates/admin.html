@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Command & Control (Admin)</h2>
+
+<div class="grid-stats">
+    <div class="card" style="margin-bottom: 0;">
+        <h3>System Users</h3>
+        <table style="margin-top: 1rem; font-size: 0.85rem;">
+            <tr><th>User</th><th>Role</th><th>Status</th></tr>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.username }}</td><td>{{ u.role }}</td>
+                <td>
+                    {% if u.locked_until %} <span class="badge" style="background: var(--critical);">LOCKED</span>
+                    {% else %} <span style="color: var(--low);">Active</span> {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="card" style="margin-bottom: 0;">
+        <h3>Manage Intelligence Reports</h3>
+        <div style="max-height: 200px; overflow-y: auto;">
+            <table style="margin-top: 1rem; font-size: 0.8rem;">
+                <tr><th>Date</th><th>Title</th><th>Action</th></tr>
+                {% for article in news %}
+                <tr>
+                    <td>{{ article.date }}</td>
+                    <td title="{{ article.title }}">{{ article.title[:30] }}...</td>
+                    <td><button onclick="deleteReport({{ article.id }})" style="padding: 0.2rem 0.5rem; font-size: 0.7rem; background: var(--critical);">Delete</button></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3">No reports found.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Recent Audit Logs</h3>
+    <table>
+        <tr><th>Timestamp</th><th>Operator</th><th>Event</th><th>Details</th></tr>
+        {% for log in audit_lines[:15] %}
+        <tr>
+            <td style="font-size: 0.8rem; color: var(--text-muted);">{{ log.timestamp[:19] }}</td>
+            <td>{{ log.username }}</td>
+            <td><span class="badge">{{ log.event }}</span></td>
+            <td style="font-size: 0.85rem; font-family: monospace;">{{ log.extra }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">No logs found.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<script>
+async function deleteReport(id) {
+    if(!confirm('Are you sure you want to delete this report?')) return;
+    try {
+        const res = await fetch(`/admin/reports/${id}`, { method: 'DELETE' });
+        if(res.ok) window.location.reload();
+        else alert('Failed to delete report.');
+    } catch(e) { alert('Request failed.'); }
+}
+</script>
+{% endblock %}

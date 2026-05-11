@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Indicators of Compromise (IOC) Database</h2>
+<p style="color: var(--text-muted);">Aggregated from processed intelligence reports.</p>
+
+<table>
+    <tr>
+        <th>Discovered</th>
+        <th>Type</th>
+        <th>Indicator Value</th>
+        <th>Source Article</th>
+    </tr>
+    {% for ioc in iocs %}
+    <tr>
+        <td style="white-space: nowrap; font-size: 0.85rem;">{{ ioc.first_seen[:10] if ioc.first_seen else 'N/A' }}</td>
+        <td><span class="badge">{{ ioc.type|upper }}</span></td>
+        <td style="font-family: monospace;">
+            {% if 'REDACTED' in ioc.value %}
+                <span class="redacted">{{ ioc.value }}</span>
+            {% else %}
+                {{ ioc.value }}
+            {% endif %}
+        </td>
+        <td style="font-size: 0.9rem;">{{ ioc.article_title }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" style="text-align: center;">No IOCs tracked currently.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

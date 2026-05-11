@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid-stats">
+    <div class="stat-box interactive" onclick="window.location.reload()">
+        <h3 id="stat-total">-</h3><p>Total Reports</p>
+    </div>
+    <div class="stat-box interactive" onclick="filterBySeverity('Critical')">
+        <h3 id="stat-critical" style="color: var(--critical)">-</h3><p>Critical Threats</p>
+    </div>
+    <div class="stat-box interactive" onclick="filterBySeverity('High')">
+        <h3 id="stat-high" style="color: var(--high)">-</h3><p>High Severity</p>
+    </div>
+    <div class="stat-box interactive" onclick="window.location.href='{{ url_for('news.iocs') }}'">
+        <h3 id="stat-iocs">-</h3><p>Tracked IOCs</p>
+    </div>
+    <div class="stat-box interactive" onclick="window.location.href='{{ url_for('news.incidents') }}'">
+        <h3 id="stat-incidents" style="color: var(--high)">-</h3><p>Open Incidents</p>
+    </div>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <h2>Live Intelligence Feed</h2>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <input type="text" id="search-q" placeholder="Search threats..." onkeyup="if(event.key === 'Enter') fetchNews()">
+        
+        <select id="filter-sev" onchange="fetchNews()">
+            <option value="">All Severities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+
+        <select id="filter-src" onchange="fetchNews()">
+            <option value="">All Sources</option>
+            <option value="The Hacker News">The Hacker News</option>
+            <option value="SecurityWeek">SecurityWeek</option>
+            <option value="BleepingComputer">BleepingComputer</option>
+            <option value="Krebs on Security">Krebs on Security</option>
+            <option value="Dark Reading">Dark Reading</option>
+            <option value="CISA KEV">CISA KEV</option>
+        </select>
+
+        <select id="filter-cat" onchange="fetchNews()">
+            <option value="">All Categories</option>
+            <option value="Advisory">Advisory</option>
+            <option value="Breach">Breach</option>
+            <option value="General">General</option>
+            <option value="Malware">Malware</option>
+            <option value="Patch">Patch</option>
+            <option value="Supply Chain">Supply Chain</option>
+            <option value="Threat Actor">Threat Actor</option>
+            <option value="Vulnerability">Vulnerability</option>
+        </select>
+        <button onclick="fetchNews()">Filter Data</button>
+    </div>
+</div>
+
+<div id="news-container"></div>
+{% endblock %}

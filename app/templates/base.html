@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberNews Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% if request.endpoint != 'auth.login' %}
+    {% if request.endpoint != 'auth.login' %}
+    <nav>
+        <div style="display: flex; align-items: center;">
+            <a href="{{ url_for('news.index') }}" style="text-decoration: none; margin-left: 0;">
+                <strong style="font-size: 1.2rem; letter-spacing: 1px; color: var(--text-main);">⚡ CYBERNEWS</strong>
+            </a>
+            
+            {% if session.get('username') %}
+                <a href="{{ url_for('news.index') }}">Dashboard</a>
+                <a href="{{ url_for('news.iocs') }}">IOC Database</a>
+                <a href="{{ url_for('news.incidents') }}">Incidents</a>
+                {% if session.get('role') == 'admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if session.get('username') %}
+                <span style="color: var(--text-main); margin-right: 1.5rem; font-size: 0.95rem;">
+                    <span id="time-greeting">Welcome</span>, 
+                    <strong style="color: var(--accent); letter-spacing: 0.5px;">{{ session.get('display_name') or session.get('username') }}</strong> 
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">({{ session.get('clearance') }})</span>
+                </span>
+                <a href="{{ url_for('auth.logout') }}" style="color: var(--critical); font-weight: bold; text-decoration: none;">Logout</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const hour = new Date().getHours();
+            let greeting = "Good evening";
+            if (hour >= 5 && hour < 12) greeting = "Good morning";
+            else if (hour >= 12 && hour < 17) greeting = "Good afternoon";
+            
+            const greetingEl = document.getElementById('time-greeting');
+            if (greetingEl) greetingEl.innerText = greeting;
+        });
+    </script>
+    {% endif %}
+    {% endif %}
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
