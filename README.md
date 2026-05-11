@@ -2,7 +2,7 @@
 
 A comprehensive threat intelligence platform that aggregates cybersecurity news, vulnerability data, and threat intelligence from multiple sources, enriched with AI-powered IOC (Indicators of Compromise) extraction and MITRE ATT&CK technique mapping.
 
-## 🎯 Overview
+##  Overview
 
 **CyberNews** is a full-stack web application built to streamline threat intelligence gathering for security analysts, SOC teams, and security operations personnel. It integrates:
 
@@ -24,7 +24,7 @@ A comprehensive threat intelligence platform that aggregates cybersecurity news,
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Tech Stack
 
@@ -69,7 +69,7 @@ cybernews/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -166,7 +166,7 @@ gunicorn run:app -c gunicorn.conf.py
 
 ---
 
-## 📋 Database Models
+##  Database Models
 
 ### User Model
 ```python
@@ -199,7 +199,7 @@ gunicorn run:app -c gunicorn.conf.py
 
 ---
 
-## 🔄 Background Jobs
+##  Background Jobs
 
 ### RSS Feed Scheduler
 
@@ -225,7 +225,7 @@ For each unprocessed article:
 
 ---
 
-## 🔐 Authentication & Authorization
+##  Authentication & Authorization
 
 ### JWT Bearer Token
 
@@ -246,7 +246,7 @@ curl -H "Authorization: Bearer YOUR_BEARER_TOKEN" \
 
 ---
 
-## 📡 API Endpoints (Examples)
+##  API Endpoints (Examples)
 
 ### Articles
 
@@ -316,7 +316,7 @@ Authorization: Bearer YOUR_TOKEN
 
 ---
 
-## 🛠️ Configuration
+##  Configuration
 
 ### `config.py` Environments
 
@@ -354,7 +354,7 @@ SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 See `requirements.txt`:
 
@@ -376,7 +376,7 @@ gunicorn==22.0.0              # Production server
 
 ---
 
-## 🧪 Testing & Seeding
+##  Testing & Seeding
 
 ### Seed Database with Test Data
 
@@ -404,7 +404,7 @@ curl http://localhost:5000/api/articles \
 
 ---
 
-## 🚀 Deployment
+##  Deployment
 
 ### Render Deployment
 
@@ -512,25 +512,8 @@ Contributions are welcome! To contribute:
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Open a Pull Request
 
----
 
-## 📞 Support & Contact
 
-For issues, feature requests, or questions:
-- Open a GitHub Issue
-- Contact the maintainer: [@4njuT0m](https://github.com/4njuT0m)
-
----
-
-## 🗺️ Roadmap
-
-- [ ] STIX/TAXII format support for threat data exchange
-- [ ] Multi-source integration (AlienVault OTX, VirusTotal)
-- [ ] Custom alert rules and webhooks
-- [ ] Advanced filtering and saved searches
-- [ ] Dark mode for dashboard
-- [ ] Automated email summaries for analysts
-- [ ] Mobile-responsive dashboard
 
 ---
 
