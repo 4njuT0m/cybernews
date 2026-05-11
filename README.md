@@ -19,7 +19,7 @@ The project aggregates cybersecurity news from The Hacker News and SecurityWeek,
 
 - Backend: Flask, SQLAlchemy
 - Database: PostgreSQL (production), SQLite (development)
-- Authentication: JWT, bcrypt
+- Authentication: Static Bearer Tokens, bcrypt
 - Scheduling: APScheduler
 - AI: Google Generative AI (Gemini)
 - Feed Parsing: feedparser
@@ -129,9 +129,9 @@ After seeding the database:
 
 **MITRE ATT&CK Mapping**: Threat techniques are mapped to MITRE ATT&CK framework for better threat classification.
 
-**Vulnerability Tracking**: Integrates CISA KEV data with EPSS scores to track exploitable vulnerabilities.
+**Vulnerability Tracking**: Integrates CISA KEV data to track federally mandated exploitable vulnerabilities..
 
-**JWT Authentication**: API endpoints secured with Bearer token authentication for programmatic access.
+**Authentication**: API endpoints secured with Bearer token authentication for programmatic access.
 
 ## Database Design
 
@@ -149,18 +149,18 @@ After seeding the database:
 - severity (Critical, High, Medium, Low)
 - summary
 - cve_id, epss_score
-- iocs_extracted (JSON array)
-- mitre_techniques (JSON array)
+- iocs (One-to-Many Relationship)
+- mitre_tags (One-to-Many Relationship)
 - ai_processed flag
 
 ## API Endpoints
 
 ```
-POST   /api/auth/login              - User login
-GET    /api/articles                - Fetch articles with filtering
-GET    /api/articles/<id>           - Get single article
-PATCH  /api/articles/<id>           - Update article notes
-POST   /api/auth/logout             - User logout
+POST /login - Web interface authentication
+POST /logout - Secure session termination
+GET /api/news - Fetch filtered intelligence feed
+DELETE /admin/reports/<id> - Purge intelligence records
+POST /admin/incidents - Create new SOC incident
 ```
 
 All endpoints require Bearer token authentication.
