@@ -29,31 +29,42 @@ The project aggregates cybersecurity news from The Hacker News and SecurityWeek,
 ```
 cybernews/
 ├── app/
+│   ├── __pycache__/
+│   ├── blueprints/
 │   ├── __init__.py              # App factory
-│   ├── models.py                # User, NewsArticle models
-│   ├── routes/                  # API endpoints
-│   │   ├── auth.py              # Authentication routes
-│   │   ├── articles.py          # Article CRUD
-│   │   └── admin.py             # Admin operations
-│   ├── services/                # Business logic
-│   │   ├── rss_feed.py          # RSS parsing
-│   │   ├── gemini_ai.py         # IOC extraction
-│   │   └── threat_mapper.py     # MITRE mapping
+│   ├── admin.py                 # Admin operations
+│   ├── api.py                   # API endpoints
+│   ├── auth.py                  # Authentication routes
+│   ├── news.py                  # News/article routes
+│   ├── services/
+│   │   ├── __pycache__/
+│   │   ├── __init__.py
+│   │   ├── feed_fetcher.py      # RSS feed parsing
+│   │   ├── gemini_service.py    # IOC extraction
+│   │   ├── ioc_extractor.py     # IOC processing
+│   │   └── scheduler.py         # Background job scheduling
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css
+│   │   └── js/
+│   │       └── main.js
 │   ├── templates/               # HTML templates
+│   │   ├── admin.html
 │   │   ├── base.html
+│   │   ├── error.html
+│   │   ├── incidents.html
 │   │   ├── index.html
-│   │   ├── login.html
-│   │   ├── dashboard.html
-│   │   └── article.html
-│   └── static/                  # CSS, JavaScript
-│       ├── css/
-│       └── js/
+│   │   ├── iocs.html
+│   │   └── login.html
+│   ├── __init__.py
+│   └── models.py                # Database models
+├── venv/
+├── .env                         # Environment variables (local)
+├── .gitignore
 ├── config.py                    # Configuration
-├── run.py                       # Entry point
-├── seed.py                      # Database seeding
 ├── requirements.txt
-├── .env.example
-└── README.md
+└── run.py                       # Entry point
+└── seed.py                      # Database seeding
 ```
 
 ## Installation & Setup
@@ -85,7 +96,8 @@ cybernews/
    SECRET_KEY=your_secret_key_here
    BEARER_TOKEN=your_bearer_token_here
    GEMINI_API_KEY=your_gemini_api_key_here
-   FLASK_ENV=development
+   # Database (Supabase)
+   DATABASE_URL=your_Database url_here
    ```
 
 5. Initialize database
